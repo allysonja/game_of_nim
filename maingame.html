@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Game of Nim</title>
+</head>
+<body>
+
+	<style type="text/css">
+		.stick {
+			width: 10px;
+			height: 100px;
+			background-color: lightblue;
+			display: inline-block;
+			margin: 5px;
+		}
+	</style>
+
+	<h2 id="header"> Current Player: <span id="current_player">1</span>
+	</h2>
+
+	<div id="body">
+		<p> Remove
+			<select id="number">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+			</select>
+		sticks from group
+			<select id="group">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+			</select>
+		</p>
+
+		<button type="button" onclick="turn()">Click</button>
+
+		<h5>First Pile</h5>
+		<div id="first_pile">
+		</div>
+
+		<h5>Second Pile</h5>
+		<div id="second_pile">
+		</div>
+
+		<h5>Third Pile</h5>
+		<div id="third_pile">
+		</div>
+	</div>
+
+<script type="text/javascript">
+	var first_pile_sticks = Math.floor(Math.random() * 11);
+	// console.log(first_pile_sticks);
+	var second_pile_sticks = Math.floor(Math.random() * 11);
+	var third_pile_sticks = Math.floor(Math.random() * 11);
+	var total_number_of_sticks = first_pile_sticks + second_pile_sticks + third_pile_sticks;
+	// console.log(total_number_of_sticks);
+
+	create_sticks(first_pile_sticks, "first_pile");
+	create_sticks(second_pile_sticks, "second_pile");
+	create_sticks(third_pile_sticks, "third_pile");
+
+	var current_player = 1;
+	var turn_count = 0;
+
+	var end_game = false;
+
+
+	function create_sticks(stick_number, div_id) {
+		for (var i = 0; i < stick_number; i++) {
+			var div = document.createElement("div");
+			div.classList.add("stick");
+
+			document.getElementById(div_id).appendChild(div);
+		}
+	}
+
+	function remove_sticks(div_id) {
+		var parent = document.getElementById(div_id);
+		while (parent.firstChild) {
+		    parent.removeChild(parent.firstChild);
+		}
+	}
+
+	function check_valid_number(number_of_sticks_to_remove, stick_number) {
+		if (number_of_sticks_to_remove > stick_number) {
+			// document.getElementById("notice").innerHTML = "You are trying to remove too many sticks!";
+			console.log("tried to remove too many sticks");
+			return false;
+		} else {
+			console.log("return true");
+			return true;
+		}
+	}
+
+	function turn() {
+
+		var stick_number_select = document.getElementById("number");
+		var number_of_sticks_to_remove = stick_number_select.options[stick_number_select.selectedIndex].text;
+		// console.log(number_of_sticks_to_remove);
+
+		var group_select = document.getElementById("group");
+		var group_number = group_select.options[group_select.selectedIndex].text;
+		// console.log(group_number);
+
+		switch (group_number) {
+			case "1":
+		        // console.log("Switch 1");
+		        var validity_check = check_valid_number(number_of_sticks_to_remove, first_pile_sticks);
+		        if (validity_check) {
+			        first_pile_sticks = first_pile_sticks - number_of_sticks_to_remove;
+			        remove_sticks("first_pile");
+			        create_sticks(first_pile_sticks, "first_pile");
+			    }
+		        break;
+		    case "2":
+			     var validity_check = check_valid_number(number_of_sticks_to_remove, second_pile_sticks);
+		        if (validity_check) {
+			    	second_pile_sticks = second_pile_sticks - number_of_sticks_to_remove;
+			    	remove_sticks("second_pile");
+			    	create_sticks(second_pile_sticks, "second_pile");
+			        // console.log("Switch 2");
+			    }
+		        break;
+		    case "3":
+		     	var validity_check = check_valid_number(number_of_sticks_to_remove, third_pile_sticks);
+		        	if (validity_check) {
+				    	third_pile_sticks = third_pile_sticks - number_of_sticks_to_remove;
+				    	remove_sticks("third_pile");
+				    	create_sticks(third_pile_sticks, "third_pile");
+				        // console.log("Switch 3");
+				    }
+		        break;
+		    default:
+		        console.log("error occurred");
+		}
+
+		get_var(case + '_pile_sticks');
+
+		total_number_of_sticks = first_pile_sticks + second_pile_sticks + third_pile_sticks;
+
+		if (total_number_of_sticks == 0) {
+			end_game = true;
+			// console.log(end_game);
+			document.getElementById('header').innerHTML = "Player " + current_player + " won!";
+			document.getElementById('body').innerHTML = "";
+		}
+
+		if (end_game != true && validity_check) {
+			if (turn_count % 2 == 0) {
+				current_player = 2;
+			} else {
+				current_player = 1;
+			}
+			document.getElementById('current_player').innerHTML = current_player;
+
+			turn_count += 1;
+		}
+	}
+</script>
+</body>
+</html>
