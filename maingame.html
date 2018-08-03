@@ -95,49 +95,54 @@
 
 	function turn() {
 
-		var stick_number_select = document.getElementById("number");
-		var number_of_sticks_to_remove = stick_number_select.options[stick_number_select.selectedIndex].text;
-		// console.log(number_of_sticks_to_remove);
+		if (turn_count % 2 == 0) { // AI PLAYER
+			minimax();
+		} else {
 
-		var group_select = document.getElementById("group");
-		var group_number = group_select.options[group_select.selectedIndex].text;
-		// console.log(group_number);
+			var stick_number_select = document.getElementById("number");
+			var number_of_sticks_to_remove = stick_number_select.options[stick_number_select.selectedIndex].text;
+			// console.log(number_of_sticks_to_remove);
 
-		switch (group_number) {
-			case "1":
-		        // console.log("Switch 1");
-		        var validity_check = check_valid_number(number_of_sticks_to_remove, first_pile_sticks);
-		        if (validity_check) {
-			        first_pile_sticks = first_pile_sticks - number_of_sticks_to_remove;
-			        remove_sticks("first_pile");
-			        create_sticks(first_pile_sticks, "first_pile");
-			    }
-		        break;
-		    case "2":
-			     var validity_check = check_valid_number(number_of_sticks_to_remove, second_pile_sticks);
-		        if (validity_check) {
-			    	second_pile_sticks = second_pile_sticks - number_of_sticks_to_remove;
-			    	remove_sticks("second_pile");
-			    	create_sticks(second_pile_sticks, "second_pile");
-			        // console.log("Switch 2");
-			    }
-		        break;
-		    case "3":
-		     	var validity_check = check_valid_number(number_of_sticks_to_remove, third_pile_sticks);
-		        	if (validity_check) {
-				    	third_pile_sticks = third_pile_sticks - number_of_sticks_to_remove;
-				    	remove_sticks("third_pile");
-				    	create_sticks(third_pile_sticks, "third_pile");
-				        // console.log("Switch 3");
+			var group_select = document.getElementById("group");
+			var group_number = group_select.options[group_select.selectedIndex].text;
+			// console.log(group_number);
+
+			switch (group_number) {
+				case "1":
+			        // console.log("Switch 1");
+			        var validity_check = check_valid_number(number_of_sticks_to_remove, first_pile_sticks);
+			        if (validity_check) {
+				        first_pile_sticks = first_pile_sticks - number_of_sticks_to_remove;
+				        remove_sticks("first_pile");
+				        create_sticks(first_pile_sticks, "first_pile");
 				    }
-		        break;
-		    default:
-		        console.log("error occurred");
+			        break;
+			    case "2":
+				     var validity_check = check_valid_number(number_of_sticks_to_remove, second_pile_sticks);
+			        if (validity_check) {
+				    	second_pile_sticks = second_pile_sticks - number_of_sticks_to_remove;
+				    	remove_sticks("second_pile");
+				    	create_sticks(second_pile_sticks, "second_pile");
+				        // console.log("Switch 2");
+				    }
+			        break;
+			    case "3":
+			     	var validity_check = check_valid_number(number_of_sticks_to_remove, third_pile_sticks);
+			        	if (validity_check) {
+					    	third_pile_sticks = third_pile_sticks - number_of_sticks_to_remove;
+					    	remove_sticks("third_pile");
+					    	create_sticks(third_pile_sticks, "third_pile");
+					        // console.log("Switch 3");
+					    }
+			        break;
+			    default:
+			        console.log("error occurred");
+			}
+
+			// get_var(case + '_pile_sticks');
+
+			total_number_of_sticks = first_pile_sticks + second_pile_sticks + third_pile_sticks;
 		}
-
-		get_var(case + '_pile_sticks');
-
-		total_number_of_sticks = first_pile_sticks + second_pile_sticks + third_pile_sticks;
 
 		if (total_number_of_sticks == 0) {
 			end_game = true;
@@ -157,6 +162,51 @@
 			turn_count += 1;
 		}
 	}
+
+	function minimax() {
+		var piles = [first_pile_sticks, second_pile_sticks, third_pile_sticks];
+		console.log(piles);
+
+		ai_turn(piles);
+
+	}
+
+	function ai_turn(piles) {
+		if (piles == [0,0,0]) {
+			console.log(piles);
+		} else {
+			generate_moves(piles);
+		}
+
+	}
+
+	function generate_moves(piles) {
+		var new_piles = [];
+
+		for (var i = 0; i < piles.length; i++) {
+
+			for (var j = 1; j < 4; j++) { // from 1-3
+				var new_piles_set = [];
+
+				if (i == 0) {
+					new_piles_set.push(piles[0] - j, piles[1], piles[2]);
+				} else if (i == 1) {
+					new_piles_set.push(piles[0], piles[1] - j, piles[2]);
+				} else if (i == 2) {
+					new_piles_set.push(piles[0], piles[1], piles[2] - j);
+				}
+
+				new_piles.push(new_piles_set);
+				// console.log(new_piles_set);
+
+			}
+
+			console.log(new_piles);
+
+		}
+
+	}
+
 </script>
 </body>
 </html>
